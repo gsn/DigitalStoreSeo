@@ -22,7 +22,7 @@ var options = {
     // by default the task waits 5000ms before fetching the html.
     // this is to give the page enough time to to assemble itself.
     // if your page needs more time, tweak here.
-    msWaitForPages: 5000,
+    msWaitForPages: 3000,
     // sanitize function to be used for filenames. Converts invalid character or number to '_' as default
     // has a filename argument, must have a return that is a sanitized string
     sanitize: function (requestUri) {
@@ -209,7 +209,7 @@ options.runner.start(options.firstUrl, function () {
 
 // finally, write the end of sitemap
 options.runner.on('run.complete', function () {
-    fs.write(options.siteMapFile, '</urlset>', 'a');
+    fs.write(options.siteMapFile + '.xml', '</urlset>', 'a');
     this.echo('\nDone!\n').exit();
 });
 
