@@ -1,1 +1,1 @@
-casperjs seo.js "http://www.marianos.com" 4199
+casperjs seo.js %1 %2
