@@ -1,6 +1,20 @@
 var fs = require("fs"),
 	 casper = require('casper');
 
+var XML_CHAR_MAP = {
+  '<': '&lt;',
+  '>': '&gt;',
+  '&': '&amp;',
+  '"': '&quot;',
+  "'": '&apos;'
+};
+ 
+function escapeXml (s) {
+  return s.replace(/[<>&"']/g, function (ch) {
+    return XML_CHAR_MAP[ch];
+  });
+}
+
 var options = {
     runner: casper.create({
         pageSettings: {
@@ -102,18 +116,13 @@ var options = {
     },
     // write the sitemap url to file
     writeSiteMapUrl: function (url) {
-        url = url.replace(/\'/g, "&apos;")
-               .replace(/\"/g, '&quot;')
-               .replace(/\>/g, '&gt;')
-               .replace(/\</g, '&lt;')
-               .replace(/\&/g, '&amp;');
+        url = escapeXml(url);
 
-        var xmlStr = '<url>';
-        //xmlStr += "<loc>" + url.replace('.staging.gsn.io', '.com') + "</loc>";
-		xmlStr += "<loc>" + url + "</loc>";
-        xmlStr += "<changefreq>daily</changefreq>";
-        xmlStr += "<priority>1.0</priority>";
-        xmlStr += "</url>";
+        var xmlStr = '\r\n  <url>';
+        xmlStr += "\r\n    <loc>" + url + "</loc>";
+        xmlStr += "\r\n    <changefreq>daily</changefreq>";
+        xmlStr += "\r\n    <priority>1.0</priority>";
+        xmlStr += "\r\n  </url>";
 
         fs.write(options.siteMapFile + '.xml', xmlStr, 'a');
         fs.write(options.siteMapFile + '.txt', url + '\r\n', 'a');
@@ -196,7 +205,7 @@ options.firstUrl = options.sitePath + options.initialQuery;
 options.runner.echo('\ncontacting: ' + options.firstUrl);
 
 // writing the first sitemap
-fs.write(options.siteMapFile + '.xml', '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><urlset>', 'w');
+fs.write(options.siteMapFile + '.xml', '<?xml version="1.0" encoding="UTF-8"?>\r\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', 'w');
 
 options.runner.start(options.firstUrl, function () {
     this.echo('first contact made: live long and prosper\n');
