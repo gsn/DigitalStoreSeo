@@ -196,7 +196,7 @@ options.firstUrl = options.sitePath + options.initialQuery;
 options.runner.echo('\ncontacting: ' + options.firstUrl);
 
 // writing the first sitemap
-fs.write(options.siteMapFile + '.xml', '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', 'w');
+fs.write(options.siteMapFile + '.xml', '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><urlset>', 'w');
 
 options.runner.start(options.firstUrl, function () {
     this.echo('first contact made: live long and prosper\n');
