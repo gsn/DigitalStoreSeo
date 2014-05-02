@@ -81,8 +81,7 @@ var options = {
 	  '/registration/facebook',
 	  '/search', // google site search
 	  '/specials',
-	  '/unsubscribe',
-	  '/tastemakers'
+	  '/unsubscribe'
     ],
     // urls discovered or scraped from run
     foundUrls: [],
