@@ -105,7 +105,9 @@ var options = {
     },
     // push a url into the queue to be proccess
     pushNextUrl: function (url, nextLevel) {
-        if (!(/^(?:[a-z]+:)?\/\//i.test(url)) && url.indexOf('?show=event&') < 0 && url.indexOf('javascript') < 0 && url != '' && url.indexOf(':') < 0 && url.indexOf('#') < 0) {
+        if (!(/^(?:[a-z]+:)?\/\//i.test(url)) && url.indexOf('?show=event&') < 0 
+          && url.indexOf('javascript') < 0 && url != '' && url.indexOf(':') < 0 
+          && url.indexOf('#') < 0 && url.indexOf('.php') < 0 && url.indexOf('.aspx') < 0) {
             if (url.indexOf('/') < 0) url = '/' + url;
             if (options.urls.indexOf(url) < 0 && options.foundUrls.indexOf(url) < 0 && nextLevel.indexOf(url) < 0) {
                 // console.log('Found url: ' + url);
