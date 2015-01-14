@@ -23,7 +23,7 @@ var runner = casper.create({
         },
         verbose: false                 // log messages will be printed out to the console
     });
-var sitePath = runner.cli.get(0).replace(/(\/)+$/gi, '');
+var sitePath = 'http://' + runner.cli.get(0).replace(/(\/)+$/gi, '');
 var siteId = runner.cli.get(1);
 
 var options = {
