@@ -15,18 +15,19 @@ function escapeXml (s) {
   });
 }
 
-var sitePath = options.runner.cli.get(0).replace(/(\/)+$/gi, '');
-var siteId = options.runner.cli.get(1);
-
-var options = {
-    runner: casper.create({
+var runner = casper.create({
         pageSettings: {
             loadImages: false,         // The WebPage instance used by Casper will
             loadPlugins: true,         // use these settings
             localToRemoteUrlAccessEnabled: true
         },
         verbose: false                 // log messages will be printed out to the console
-    }),
+    });
+var sitePath = runner.cli.get(0).replace(/(\/)+$/gi, '');
+var siteId = runner.cli.get(1);
+
+var options = {
+    runner: runner,
     // this is the query that set on the firstUrl of the website
     initialQuery: '?selectFirstStore=true',
     // that's the path where the snapshots should be placed
