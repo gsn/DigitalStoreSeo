@@ -63,7 +63,6 @@ var options = {
 	  '/circular',
 	  '/circular/textview',
 	  '/circular/listview',
-	  '/community',
 	  '/contactus',
 	  '/coupons',
 	  '/mealplannerfull',
