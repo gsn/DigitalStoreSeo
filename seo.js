@@ -15,6 +15,9 @@ function escapeXml (s) {
   });
 }
 
+var sitePath = options.runner.cli.get(0).replace(/(\/)+$/gi, '');
+var siteId = options.runner.cli.get(1);
+
 var options = {
     runner: casper.create({
         pageSettings: {
@@ -29,7 +32,7 @@ var options = {
     // that's the path where the snapshots should be placed
     // it's empty by default which means they will go into the directory
     // where your capserjs javascript file is placed
-    snapshotPath: 'snapshots/',
+    snapshotPath: 'snapshots/' + siteId + '/',
     // you can choose a prefix for your snapshots
     // by default it's ''
     fileNamePrefix: '',
@@ -194,7 +197,6 @@ var options = {
     }
 };
 
-var sitePath = options.runner.cli.get(0).replace(/(\/)+$/gi, ''); // 'http://www.marianos.com';
 //var initialStoreId = options.runner.cli.get(1); // 4199
 //options.initialQuery += initialStoreId;
 options.sitePath = sitePath;
