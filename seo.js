@@ -198,8 +198,6 @@ var options = {
     }
 };
 
-//var initialStoreId = options.runner.cli.get(1); // 4199
-//options.initialQuery += initialStoreId;
 options.sitePath = sitePath;
 
 fs.removeTree(options.snapshotPath);
