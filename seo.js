@@ -195,8 +195,8 @@ var options = {
 };
 
 var sitePath = options.runner.cli.get(0).replace(/(\/)+$/gi, ''); // 'http://www.marianos.com';
-var initialStoreId = options.runner.cli.get(1); // 4199
-options.initialQuery += initialStoreId;
+//var initialStoreId = options.runner.cli.get(1); // 4199
+//options.initialQuery += initialStoreId;
 options.sitePath = sitePath;
 
 fs.removeTree(options.snapshotPath);
