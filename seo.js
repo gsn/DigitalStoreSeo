@@ -25,7 +25,7 @@ var options = {
         verbose: false                 // log messages will be printed out to the console
     }),
     // this is the query that set on the firstUrl of the website
-    initialQuery: '?setStoreId=',
+    initialQuery: '?selectFirstStore=true',
     // that's the path where the snapshots should be placed
     // it's empty by default which means they will go into the directory
     // where your capserjs javascript file is placed
