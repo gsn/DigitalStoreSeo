@@ -33,7 +33,7 @@ var options = {
     // that's the path where the snapshots should be placed
     // it's empty by default which means they will go into the directory
     // where your capserjs javascript file is placed
-    snapshotPath: 'snapshots/' + siteId + '/',
+    snapshotPath: 'snapshots/' + (siteId ? siteId + '/' : ''),
     // you can choose a prefix for your snapshots
     // by default it's ''
     fileNamePrefix: '',
