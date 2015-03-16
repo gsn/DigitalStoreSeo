@@ -29,7 +29,7 @@ var siteId = runner.cli.get(1);
 var options = {
     runner: runner,
     // this is the query that set on the firstUrl of the website
-    initialQuery: '?selectFirstStore=true',
+    initialQuery: '/?selectFirstStore=true',
     // that's the path where the snapshots should be placed
     // it's empty by default which means they will go into the directory
     // where your capserjs javascript file is placed
@@ -37,10 +37,10 @@ var options = {
     // you can choose a prefix for your snapshots
     // by default it's ''
     fileNamePrefix: '',
-    // by default the task waits 5000ms before fetching the html.
+    // by default the task waits 1s before fetching the html.
     // this is to give the page enough time to to assemble itself.
     // if your page needs more time, tweak here.
-    msWaitForPages: 3000,
+    msWaitForPages: 1000,
     // sanitize function to be used for filenames. Converts invalid character or number to '_' as default
     // has a filename argument, must have a return that is a sanitized string
     sanitize: function (requestUri) {
@@ -56,6 +56,8 @@ var options = {
     removeLinkTags: false,
     // set `removeMetaTags` to true. It's false by default
     removeMetaTags: false,
+    // set `removeIframes` to true. It's false by default
+    removeIframes: true,
     // here goes the list of all urls that should be fetched
     replaceStrings: [
 	],
@@ -153,6 +155,10 @@ var options = {
             msg = msg.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
             msg = msg.replace(/( style=")([^"])*(")/gi, '');
         }
+        
+        if (options.removeIframes) {
+            msg = msg.replace(/<iframe.+?<\/iframe>/gi, '');
+        }
 
         if (options.removeLinkTags) {
             msg = msg.replace(/<link\s.*?(\/)?>/gi, '');
@@ -183,17 +189,24 @@ var options = {
     },
     processLinks: function (links) {
         options.runner.each(links, function (self, link) {
-            var realUrl = options.sitePath + link;
-            self.thenOpen(realUrl, function () {
-                this.wait(options.msWaitForPages, function () {
-                    options.processUrl(this.getHTML(), link);
-                    var nextLinks = [];
-                    options.scrapeLinks(this, nextLinks);
-                    if (nextLinks.length > 0) {
-                        options.processLinks(nextLinks);
-                    }
-                });
+            var fullUrl = options.sitePath + link;
+            this.then(function() {
+              var realUrl = self.evaluate(function(link) {
+                window.gsn.goUrl(link);
+                return window.location.href;
+              }, link);
+              
+              // console.log(realUrl);
+              this.wait(options.msWaitForPages, function () {
+                options.processUrl(this.getHTML(), link);
+                var nextLinks = [];
+                options.scrapeLinks(this, nextLinks);
+                if (nextLinks.length > 0) {
+                    options.processLinks(nextLinks);
+                }
+              });
             });
+           
         })
     }
 };
@@ -210,8 +223,9 @@ fs.write(options.siteMapFile + '.xml', '<?xml version="1.0" encoding="UTF-8"?>\r
 
 options.runner.start(options.firstUrl, function () {
     this.echo('first contact made: live long and prosper\n');
-
-    this.wait(15000, function () {
+    console.log(options.firstUrl);
+    
+    this.wait(5000, function () {
         options.processUrl(this.getHTML(), '/');
         options.processLinks(options.urls);
     });
