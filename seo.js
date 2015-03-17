@@ -134,7 +134,7 @@ var options = {
         fs.write(options.siteMapFile + '.txt', url + '\r\n', 'a');
     },
     // prcoess the html content and write to file
-    processUrl: function (msg, url) {
+    processUrl: function (msg, url, isIndex) {
         options.writeSiteMapUrl(options.sitePath + url);
 
         var plainUrl = url.replace(options.sitePath, '');
@@ -145,8 +145,15 @@ var options = {
 						'.html';
 
         // remove weird or invalid new lines        
-        msg = msg.replace(/\\n|\\t|\\r|\\f/g, '');
-
+        msg = msg.replace(/\\n|\\t|\\r|\\f/g, '');  
+        msg = msg.replace(/\=\"\/\//gi, '="http://');
+        msg = msg.replace(/<\!\-\-endhead\-\->.+<\/head>/gi, '</head>');
+        msg = msg.replace(/<\!\-\-begin:analytics\-\->.+<\!\-\-end:analytics\-\->/gi, '');
+        msg = msg.replace(/<div.+hidden ng-scope.+alt\=\"tracking\s+pixel\"><\/div>/gi, '');
+        if (isIndex) {
+          fs.write(options.snapshotPath + 'index.html', msg, 'w');
+        }
+        
         if (options.removeScripts) {
             msg = msg.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
         }
@@ -226,7 +233,7 @@ options.runner.start(options.firstUrl, function () {
     console.log(options.firstUrl);
     
     this.wait(5000, function () {
-        options.processUrl(this.getHTML(), '/');
+        options.processUrl(this.getHTML(), '/', true);
         options.processLinks(options.urls);
     });
 });
