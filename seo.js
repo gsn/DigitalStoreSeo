@@ -145,11 +145,13 @@ var options = {
 						'.html';
 
         // remove weird or invalid new lines        
-        msg = msg.replace(/\\n|\\t|\\r|\\f/g, '');  
+        msg = msg.replace(/\\n|\\t|\\r|\\f/g, ''); 
         msg = msg.replace(/\=\"\/\//gi, '="http://');
-        msg = msg.replace(/<\!\-\-endhead\-\->.+<\/head>/gi, '</head>');
-        msg = msg.replace(/<\!\-\-begin:analytics\-\->.+<\!\-\-end:analytics\-\->/gi, '');
+        msg = msg.replace(/<!--endhead-->[+\s\S]+<body/gi, '</head><body');
+        msg = msg.replace(/<!--begin:analytics[+\s\S]+<!--begin:analytics-->/gi, '');
+        msg = msg.replace(/<!--begin:analytics[+\s\S]+<!--end:analytics-->/gi, '');
         msg = msg.replace(/<div.+hidden ng-scope.+alt\=\"tracking\s+pixel\"><\/div>/gi, '');
+        msg = msg.replace('{"ContentBaseUrl":', '{"dontUseProxy": true,"ContentBaseUrl":');
         if (isIndex) {
           fs.write(options.snapshotPath + 'index.html', msg, 'w');
         }
