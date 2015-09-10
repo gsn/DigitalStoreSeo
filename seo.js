@@ -23,13 +23,13 @@ var runner = casper.create({
         },
         verbose: false                 // log messages will be printed out to the console
     });
-var sitePath = 'http://' + runner.cli.get(0).replace(/(\/)+$/gi, '');
+var sitePath = 'http://' + runner.cli.get(0).replace(/(\/)+$/gi, '').replace('http://', '');
 var siteId = runner.cli.get(1);
 
 var options = {
     runner: runner,
     // this is the query that set on the firstUrl of the website
-    initialQuery: '/?selectFirstStore=true',
+    initialQuery: '/?sfs=true',
     // that's the path where the snapshots should be placed
     // it's empty by default which means they will go into the directory
     // where your capserjs javascript file is placed
@@ -61,9 +61,8 @@ var options = {
     // here goes the list of all urls that should be fetched
     replaceStrings: [
 	],
-    // first level urls
+    // first level urls, replace this with your own array
     urls: [
-	  // '/article?id='
 	  '/storelocator',
 	  '/changepassword',
 	  '/circular',
@@ -84,7 +83,6 @@ var options = {
 	  '/recoverusername',
 	  '/registration',
 	  '/registration/facebook',
-	  '/search', // google site search
 	  '/specials',
 	  '/unsubscribe'
     ],
@@ -145,13 +143,12 @@ var options = {
 						'.html';
 
         // remove weird or invalid new lines        
-        msg = msg.replace(/\\n|\\t|\\r|\\f/g, ''); 
+        msg = msg.replace(/\\n|\\t|\\r|\\f/g, '');
         msg = msg.replace(/\=\"\/\//gi, '="http://');
-        msg = msg.replace(/<!--endhead-->[+\s\S]+<body/gi, '</head><body');
-        msg = msg.replace(/<!--begin:analytics[+\s\S]+<!--begin:analytics-->/gi, '');
+        msg = msg.replace(/<head>[+\s\S]+<meta charset=\"utf-8\"/gi, '<head><meta charset="utf-8"');
         msg = msg.replace(/<!--begin:analytics[+\s\S]+<!--end:analytics-->/gi, '');
-        msg = msg.replace(/<div.+hidden ng-scope.+alt\=\"tracking\s+pixel\"><\/div>/gi, '');
         msg = msg.replace('{"ContentBaseUrl":', '{"dontUseProxy": true,"ContentBaseUrl":');
+
         if (isIndex) {
           fs.write(options.snapshotPath + 'index.html', msg, 'w');
         }
@@ -160,21 +157,9 @@ var options = {
             msg = msg.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
         }
 
-        if (options.removeStyles) {
-            msg = msg.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
-            msg = msg.replace(/( style=")([^"])*(")/gi, '');
-        }
-        
+       
         if (options.removeIframes) {
             msg = msg.replace(/<iframe.+?<\/iframe>/gi, '');
-        }
-
-        if (options.removeLinkTags) {
-            msg = msg.replace(/<link\s.*?(\/)?>/gi, '');
-        }
-
-        if (options.removeMetaTags) {
-            msg = msg.replace(/<meta\s.*?(\/)?>/gi, '');
         }
 
         options.replaceStrings.forEach(function (obj) {
@@ -188,9 +173,9 @@ var options = {
         msg = msg.replace(/\n|\t|\f|\r/g, '');
         msg = msg.replace(/<!--.*?-->/g, '');
         msg = msg.replace(/( data-[^=]*=")([^"])*(")/gi, '');
+        msg = msg.replace(/(\>\s+\<)+/g, '\>\n\<');
         msg = msg.replace(/\s+/g, ' ');
-        msg = msg.replace(/\s+/g, ' ');
-        msg = msg.replace(/(\>\s\<)+/g, '\>\n\<');
+        msg = msg.replace(/></g, '>\r\n<');
 
         fs.write(fileName, msg, 'w');
         options.proccessedCounter++;
@@ -208,11 +193,11 @@ var options = {
               // console.log(realUrl);
               this.wait(options.msWaitForPages, function () {
                 options.processUrl(this.getHTML(), link);
-                var nextLinks = [];
+                /*var nextLinks = [];
                 options.scrapeLinks(this, nextLinks);
                 if (nextLinks.length > 0) {
                     options.processLinks(nextLinks);
-                }
+                }*/
               });
             });
            

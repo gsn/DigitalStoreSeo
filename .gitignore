@@ -117,3 +117,4 @@ Thumbs.db
 node_modules
 *.pubxml
 snapshots/
+.DS_Store
